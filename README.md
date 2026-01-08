@@ -1,6 +1,6 @@
 ### Usage
 
-LGE only.
+Low Grade Edition only.
 
 If you launch MHFZ as admin you must launch this as admin too, though I recommend launching neither as admin.
 
