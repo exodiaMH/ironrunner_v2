@@ -1,0 +1,17 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup target add i686-pc-windows-msvc
+      - run: cargo build --release --target i686-pc-windows-msvc
+      - run: Compress-Archive target/i686-pc-windows-msvc/release/ironrunner.exe, target/i686-pc-windows-msvc/release/ironrunner.dll ironrunner-${{ github.ref_name }}.zip
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: ironrunner-*.zip
