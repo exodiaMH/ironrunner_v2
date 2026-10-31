@@ -1,4 +1,7 @@
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
+use windows::Win32::System::Memory::{
+    MEM_COMMIT, MEMORY_BASIC_INFORMATION, PAGE_GUARD, PAGE_NOACCESS, VirtualQuery,
+};
 use windows::core::{PCSTR, s};
 
 #[derive(Clone, Copy)]
@@ -52,15 +55,45 @@ pub struct KBMDisable {
     mouse_orig: [u8; 5],
 }
 
+/// SizeOfImage of the game module. The Rain client decrypts client.dll and maps it manually, so
+/// it never shows up in the module list and has to be found by walking the address space.
+const CLIENT_IMAGE_SIZE: u32 = 0x6489000;
+
+fn find_mapped_client() -> Option<usize> {
+    let mut addr = 0usize;
+    loop {
+        let mut mbi = MEMORY_BASIC_INFORMATION::default();
+        let queried =
+            unsafe { VirtualQuery(Some(addr as *const _), &mut mbi, size_of_val(&mbi)) };
+        if queried == 0 {
+            return None;
+        }
+        let base = mbi.BaseAddress as usize;
+        let readable = mbi.State == MEM_COMMIT
+            && mbi.Protect.0 != 0
+            && mbi.Protect.0 & (PAGE_NOACCESS.0 | PAGE_GUARD.0) == 0;
+        if readable && base == mbi.AllocationBase as usize && mbi.RegionSize >= 0x1000 {
+            let header = unsafe { std::slice::from_raw_parts(base as *const u8, 0x1000) };
+            if header.starts_with(b"MZ") {
+                let pe = u32::from_le_bytes(header[0x3C..0x40].try_into().unwrap()) as usize;
+                if pe + 0x54 <= header.len() && &header[pe..pe + 4] == b"PE\0\0" {
+                    let size = u32::from_le_bytes(header[pe + 0x50..pe + 0x54].try_into().unwrap());
+                    if size == CLIENT_IMAGE_SIZE {
+                        return Some(base);
+                    }
+                }
+            }
+        }
+        addr = base.checked_add(mbi.RegionSize)?;
+    }
+}
+
 impl MHFOInfo {
     pub fn find_main_dll() -> Option<Self> {
         if let Ok(handle) = unsafe { GetModuleHandleA(PCSTR(s!("mhfo.dll").as_ptr())) } {
             Some(Self::LowGrade(Addresses::new_lge(handle.0.addr())))
-        } else if let Ok(handle) = unsafe { GetModuleHandleA(PCSTR(s!("mhfo-hd.dll").as_ptr())) } {
-            None
-            // Some(Self::HighGrade(Addresses::new_hge(handle.0.addr())))
         } else {
-            None
+            find_mapped_client().map(|base| Self::LowGrade(Addresses::new_lge(base)))
         }
     }
 

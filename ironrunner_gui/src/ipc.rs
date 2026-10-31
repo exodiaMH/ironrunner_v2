@@ -70,7 +70,7 @@ pub struct Settings {
 
 fn inject() -> Result<()> {
     let target_process =
-        OwnedProcess::find_first_by_name("mhf.exe").ok_or(anyhow!("MHFZ not running"))?;
+        OwnedProcess::find_first_by_name("client.exe").ok_or(anyhow!("MHFZ not running"))?;
     info!("Found target process");
 
     let syringe = Syringe::for_process(target_process);
