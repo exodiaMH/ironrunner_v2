@@ -163,14 +163,14 @@ impl Addresses {
             departure: dll + 0x18FDEA0,
             red_box: dll + 0x28C3AA0,
             small_box: dll + 0x18FDFC0,
-            gem_color: dll + 0x610037C,
-            colors: dll + 0x6100360,
-            gem_level: dll + 0x610037D,
+            gem_color: dll + 0x5C1A0F4,
+            colors: dll + 0x5C1A0D8,
+            gem_level: dll + 0x5C1A0F5,
             settings_base: dll + 0x5BC657A,
             start_menu_idx: dll + 0x5BD591A,
             accepted_quest: dll + 0x5A959EC,
             portable_controls: dll + 0x4FB4FBB, // Hopefully correct, iffy to test
-            item_box: dll + 0x60F2014,
+            item_box: dll + 0x5C0BD8C,
         }
     }
 
