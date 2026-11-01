@@ -1,5 +1,7 @@
 ### Usage
 
+Rain Client only! This fork will not work with any other clients.
+
 Low Grade Edition only.
 
 If you launch MHFZ as admin you must launch this as admin too, though I recommend launching neither as admin.
@@ -10,4 +12,5 @@ Disables your inputs while active. Tries to recover from connection errors after
 
 ### Acknowledgements
 
+Relial for the original ironrunner_v2
 Testing - Mel, Yutu, Eliel, Ahfai, Dak
