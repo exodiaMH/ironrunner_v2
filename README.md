@@ -1,8 +1,8 @@
 ### Usage
 
-Low Grade Edition only.
+Low Grade Edition only. This fork will not work with any other clients other than Rain clinet.
 
-If you launch MHFZ as admin you must launch this as admin too, though I recommend launching neither as admin.
+If you launch Rain client as admin you must launch this as admin too, though neither is required to be ran as admin.
 
 Follow the UI's requirement list. Red = need to fix, yellow = recommended to fix, green = good to go.
 
@@ -10,4 +10,6 @@ Disables your inputs while active. Tries to recover from connection errors after
 
 ### Acknowledgements
 
-Testing - Mel, Yutu, Eliel, Ahfai, Dak
+Relial for the original ironrunner_v2
+
+Testing - Mel, Yutu, Eliel, Ahfai, Dak, Stygios
